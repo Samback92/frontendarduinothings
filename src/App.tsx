@@ -1,4 +1,4 @@
-import './App.css';
+import './styling/App.css';
 import Measurements from './components/Measurements';
 
 function App() {
