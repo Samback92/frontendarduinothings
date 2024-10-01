@@ -24,20 +24,41 @@ const Measurements: React.FC = () => {
   
         fetchData();
     }, []);
+
+    const handleDelete = (dataId: string) => {
+        fetch(`https://shark-app-7cyvy.ondigitalocean.app/${dataId}`, {
+            method: 'DELETE',
+        })
+        .then(res => {
+            if (res.ok) {
+                setMeasurements(measurements.filter(measurement => measurement.id !== dataId));
+            } else {
+                console.error('Failed to delete task');
+            }
+        });
+    };
   
     return (
-        <div>
-            <h1>Measurements</h1>
-            <ul>
-            {measurements.map(measurement => (
-                <li key={measurement.id}>
-                    <p>Timestamp: {new Date(measurement.timestamp).toLocaleString()}</p>
-                    <p>Temperature: {measurement.temperature}°C</p>
-                    <p>Humidity: {measurement.humidity}%</p>
-                </li>
-            ))}
-            </ul>
-        </div>
+        <>
+            <div>
+                <h1>Measurements</h1>
+                <div>
+                {measurements.map(measurement => (
+                    <div id='dataDiv' key={measurement.id}>
+                        <div>
+                            <p>Timestamp: {new Date(measurement.timestamp).toLocaleString()}</p>
+                            <p>Temperature: {measurement.temperature}°C</p>
+                            <p>Humidity: {measurement.humidity}%</p>
+                        </div>
+                        <button onClick={() => handleDelete(measurement.id)}>Delete</button>
+                    </div>
+                ))}
+                </div>
+            </div>
+            <div>
+                <h1>Add a new measurement</h1>
+            </div>
+        </>
     );
 };
   
