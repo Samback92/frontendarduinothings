@@ -1,58 +1,45 @@
 import React, { useEffect, useState } from 'react';
+import { fetchData, deleteData } from '../services/api';
+import MeasurementItem from './MeasurementItem';
+import { Measurement } from "../types";
 
-
-interface Measurement {
-    id: string;
-    temperature: number;
-    humidity: number;
-    timestamp: string;
-}
 
 const Measurements: React.FC = () => {
     const [measurements, setMeasurements] = useState<Measurement[]>([]);
   
     useEffect(() => {
-        const fetchData = async () => {
+        const loadMeasurements = async () => {
             try {
-                const response = await fetch('https://shark-app-7cyvy.ondigitalocean.app/get-data');
-                const data = await response.json();
+                // const response = await fetch('http://localhost:8080/get-data');
+                const data = await fetchData<Measurement[]>('https://shark-app-7cyvy.ondigitalocean.app/get-data');
                 setMeasurements(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
   
-        fetchData();
+        loadMeasurements();
     }, []);
 
-    const handleDelete = (dataId: string) => {
-        fetch(`https://shark-app-7cyvy.ondigitalocean.app/${dataId}`, {
-            method: 'DELETE',
-        })
-        .then(res => {
-            if (res.ok) {
-                setMeasurements(measurements.filter(measurement => measurement.id !== dataId));
-            } else {
-                console.error('Failed to delete task');
-            }
-        });
+    const handleDelete = async (dataId: string) => {
+        try {
+            // fetch(`http://localhost:8080/${dataId}`
+            await deleteData(`https://shark-app-7cyvy.ondigitalocean.app/${dataId}`);
+            setMeasurements(measurements.filter(measurement => measurement.id !== dataId));
+        } catch (error) {
+            console.error('Error deleting data:', error);
+        }
     };
   
+
     return (
         <>
             <div>
                 <h1>Measurements</h1>
                 <div>
-                {measurements.map(measurement => (
-                    <div id='dataDiv' key={measurement.id}>
-                        <div>
-                            <p>Timestamp: {new Date(measurement.timestamp).toLocaleString()}</p>
-                            <p>Temperature: {measurement.temperature}°C</p>
-                            <p>Humidity: {measurement.humidity}%</p>
-                        </div>
-                        <button onClick={() => handleDelete(measurement.id)}>Delete</button>
-                    </div>
-                ))}
+                    {measurements.map(measurement => (
+                        <MeasurementItem key={measurement.id} measurement={measurement} onDelete={handleDelete} />
+                    ))}
                 </div>
             </div>
             <div>
