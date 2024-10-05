@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styling/Statistics.module.css';
 import { Measurement } from '../types';
 
 interface StatisticsProps {
@@ -17,7 +18,7 @@ const Statistics: React.FC<StatisticsProps> = ({ measurements }) => {
 
 
     return (
-        <div>
+        <div className={styles.statsDiv}>
             <h2>Statistics</h2>
             <p>Highest temperature: {maxTemperature.toFixed(2)} °C</p>
             <p>Average temperature: {averageTemperature.toFixed(2)} °C</p>

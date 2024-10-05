@@ -17,7 +17,7 @@ const Measurements: React.FC = () => {
         const loadMeasurements = async () => {
             try {
                 // const response = await fetch('http://localhost:8080/get-data');
-                const data = await fetchData<Measurement[]>('https://shark-app-7cyvy.ondigitalocean.app/get-data');
+                const data = await fetchData<Measurement[]>('/get-data');
                 setMeasurements(data);
                 filterMeasurements(data, 'today');
             } catch (error) {
@@ -31,7 +31,7 @@ const Measurements: React.FC = () => {
     const handleDelete = async (dataId: string) => {
         try {
             // fetch(`http://localhost:8080/${dataId}`
-            await deleteData(`https://shark-app-7cyvy.ondigitalocean.app/${dataId}`);
+            await deleteData(`/${dataId}`);
             const updatedMeasurements = measurements.filter(measurement => measurement.id !== dataId);
             setMeasurements(updatedMeasurements);
             filterMeasurements(updatedMeasurements, filter);
@@ -89,7 +89,11 @@ const Measurements: React.FC = () => {
         <>
             <div>
                 <h1>Measurements</h1>
-                <FilterSelect filter={filter} onFilterChange={handleFilterChange} />
+                <h2>from sensor DHT11</h2>
+                <div>
+                    <p>Filter the list by :</p>
+                    <FilterSelect filter={filter} onFilterChange={handleFilterChange} />   
+                </div>
                 <div>
                     <Statistics measurements={filteredMeasurements} />
                 </div>
@@ -98,9 +102,6 @@ const Measurements: React.FC = () => {
                         <MeasurementItem key={measurement.id} measurement={measurement} onDelete={handleDelete} />
                     ))}
                 </div>
-            </div>
-            <div>
-                <h1>Add a new measurement</h1>
             </div>
         </>
     );
